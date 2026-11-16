@@ -3,12 +3,13 @@ extends PathFollow2D
 ## A unit walking along the Path2D toward the enemy base.
 
 const TYPES := {
+    # "reward" = gold when the unit dies (~10% of cost); reaching the base pays more (see GameManager)
     "skeleton": {"name": "Skeleton", "cost": 10, "hp": 60.0, "speed": 150.0,
-        "flying": false, "reward": 2, "base_damage": 1, "radius": 9.0, "icon_radius": 15.0},
+        "flying": false, "reward": 1, "base_damage": 1, "radius": 9.0, "icon_radius": 15.0},
     "bat": {"name": "Bat", "cost": 20, "hp": 80.0, "speed": 120.0,
-        "flying": true, "reward": 3, "base_damage": 2, "radius": 10.0, "icon_radius": 12.0},
-    "slime": {"name": "Slime", "cost": 30, "hp": 350.0, "speed": 80.0,
-        "flying": false, "reward": 5, "base_damage": 3, "radius": 14.0, "icon_radius": 13.0},
+        "flying": true, "reward": 2, "base_damage": 2, "radius": 10.0, "icon_radius": 12.0},
+    "slime": {"name": "Slime", "cost": 45, "hp": 350.0, "speed": 80.0,
+        "flying": false, "reward": 4, "base_damage": 3, "radius": 14.0, "icon_radius": 13.0},
 }
 
 var unit_type: String = "skeleton"
@@ -17,7 +18,8 @@ var max_hp: float = 60.0
 var current_hp: float = 60.0
 var speed: float = 150.0
 var is_flying: bool = false
-var gold_reward: int = 2
+var cost: int = 10
+var gold_reward: int = 1
 var base_damage: int = 1
 var radius: float = 9.0
 
@@ -31,6 +33,7 @@ func setup(type: String) -> void:
     max_hp = d["hp"]
     speed = d["speed"]
     is_flying = d["flying"]
+    cost = d["cost"]
     gold_reward = d["reward"]
     base_damage = d["base_damage"]
     radius = d["radius"]
@@ -75,7 +78,7 @@ func reach_base() -> void:
         return
     _done = true
     remove_from_group("units")
-    GameManager.damage_base(base_damage)
+    GameManager.unit_reached_base(cost, base_damage)
     queue_free()
 
 

@@ -35,6 +35,7 @@ var base_bar: ProgressBar
 var send_button: Button
 var clear_button: Button
 var unit_buttons: Dictionary = {}
+var report_label: Label
 var overlay: ColorRect
 var overlay_label: Label
 
@@ -54,6 +55,7 @@ func _ready() -> void:
     GameManager.wave_changed.connect(_refresh_ui)
     GameManager.base_hp_changed.connect(_on_base_hp_changed)
     GameManager.game_over.connect(_on_game_over)
+    GameManager.wave_report.connect(_on_wave_report)
 
     GameManager.reset_game()
     _refresh_ui()
@@ -228,6 +230,14 @@ func _build_ui() -> void:
     hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
     ui.add_child(hint)
 
+    # Wave reward summary (shown briefly after each cleared wave)
+    report_label = _make_label("", Vector2(370, 48), 26, Color(0.1, 0.78, 0.72), Color(0.05, 0.1, 0.03))
+    report_label.size = Vector2(VIEW_W - 390, 36)
+    report_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    report_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    report_label.modulate.a = 0.0
+    ui.add_child(report_label)
+
     # Bottom-left control panel
     var bottom := ColorRect.new()
     bottom.color = brown
@@ -322,6 +332,14 @@ func _on_send_wave() -> void:
 func _on_wave_started() -> void:
     wave_active = true
     _refresh_ui()
+
+
+func _on_wave_report(income: int, reached: int) -> void:
+    report_label.text = "+%d souls (%d reached base)" % [income, reached]
+    report_label.modulate.a = 1.0
+    var tw := create_tween()
+    tw.tween_interval(2.0)
+    tw.tween_property(report_label, "modulate:a", 0.0, 1.0)
 
 
 func _on_game_over(won: bool) -> void:

@@ -11,6 +11,12 @@
 Click a unit tile (top-left) to queue it (cost shown under the icon), then press **Send Wave** (bottom-left). Clear refunds the queue.
 After each cleared wave you earn souls and every tower levels up (+5% damage per level).
 
+## Economy (v5)
+- Wave income = 25 base + for every unit that reached the base: 50% of its cost + 5 per base damage dealt. Tiny "stall" waves no longer pay as much as real attacks.
+- A unit that dies refunds ~10% of its cost (Skeleton 1, Bat 2, Slime 4).
+- Slime cost 30 -> 45 (it was by far the best HP per soul).
+- Tunables: `wave_base_income`, `reach_refund`, `damage_bonus` in `GameManager.gd`; costs/rewards in `Unit.TYPES`.
+
 ## What changed in v4
 - Armor removed completely: units only have HP, and towers deal their full damage.
 - Tower range is shown as a soft tinted area only; the outer rings are gone.
